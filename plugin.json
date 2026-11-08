@@ -1,0 +1,77 @@
+{
+  "name": "freebuff-termux-host",
+  "version": "0.1.0",
+  "description": "Host projects on your Android phone with Termux — serve static sites, Node/Python apps on localhost/LAN and expose them with a tunnel. Designed for the Freebuff mobile app / terminal.",
+  "author": "freebuff",
+  "license": "MIT",
+  "requires": {
+    "android": true,
+    "termux": true,
+    "min_storage_mb": 500
+  },
+  "commands": {
+    "freebuff-host": "bin/freebuff-host",
+    "host": "bin/freebuff-host"
+  },
+  "tools": [
+    {
+      "name": "host_serve",
+      "description": "Start hosting a project directory on a port (auto-detect static / node / python). Blocks until stopped or runs detached with --detach.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Project directory (default: cwd)" },
+          "port": { "type": "integer", "default": 8000 },
+          "host": { "type": "string", "default": "0.0.0.0" },
+          "type": { "type": "string", "enum": ["auto", "static", "node", "python"], "default": "auto" },
+          "detach": { "type": "boolean", "default": true }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "host_status",
+      "description": "List hosted projects, PIDs, ports, and LAN URLs.",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "host_stop",
+      "description": "Stop a hosted project by name or port.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "port": { "type": "integer" }
+        }
+      }
+    },
+    {
+      "name": "host_tunnel",
+      "description": "Expose a hosted port publicly via cloudflared / pinggy / ngrok (first available).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "port": { "type": "integer", "default": 8000 },
+          "provider": { "type": "string", "enum": ["auto", "cloudflared", "pinggy", "ngrok"], "default": "auto" }
+        }
+      }
+    },
+    {
+      "name": "host_wake_lock",
+      "description": "Acquire/release Termux wake lock so Android doesn't kill the server.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string", "enum": ["acquire", "release"], "default": "acquire" }
+        }
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "host-project",
+      "path": "skills/host-project/SKILL.md",
+      "description": "Workflow to host any project on Termux: detect type, pick port, serve, verify, tunnel, keep alive."
+    }
+  ]
+}
